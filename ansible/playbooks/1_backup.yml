@@ -1,0 +1,27 @@
+---
+- name: Scenario 1 - Automated Network Backup
+  hosts: network_devices
+  gather_facts: false
+
+  tasks:
+    - name: Get Date
+      command: date +%Y-%m-%d_%H:%M
+      register: date_var
+      delegate_to: localhost
+
+    - name: Create Directory
+      file:
+        path: ./backups/{{ date_var.stdout }}
+        state: directory
+      delegate_to: localhost
+
+    - name: Get Config
+      ios_command:
+        commands: show run
+      register: config_output
+
+    - name: Save to File
+      copy:
+        content: "{{ config_output.stdout[0] }}"
+        dest: "./backups/{{ date_var.stdout }}/{{ inventory_hostname }}.txt"
+      delegate_to: localhost
