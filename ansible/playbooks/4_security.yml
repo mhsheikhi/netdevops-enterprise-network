@@ -1,0 +1,41 @@
+---
+- name: Scenario 4 - Security Hardening
+  hosts: access_switches, core_switches
+  gather_facts: false
+
+  tasks:
+    - name: Disable Unused Services (HTTP, BOOTP, CDP)
+      ios_config:
+        lines:
+          - no ip http server
+          # In production also add: no ip http secure-server
+          - no ip bootp server
+          - no cdp run
+          - service password-encryption
+
+    - name: Enforce SSH Version 2 and Timeouts
+      ios_config:
+        lines:
+          - ip ssh version 2
+          - ip ssh time-out 60
+          - ip ssh authentication-retries 3
+
+    - name: Secure VTY Lines (kill Telnet)
+      ios_config:
+        parents: line vty 0 4
+        lines:
+          - transport input ssh
+          - exec-timeout 5 0
+          - logging synchronous
+
+    - name: Configure Console Line for Lab (Never Timeout)
+      ios_config:
+        parents: line con 0
+        lines:
+          - logging synchronous
+          - exec-timeout 0 0
+          # Should be 5 0 in production, 0 0 in lab/demo only
+
+    - name: Save Config
+      ios_config:
+        save_when: modified
