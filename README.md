@@ -427,8 +427,8 @@ This project documents a reproducible solution: re-engineering the Docker daemon
 // /etc/docker/daemon.json
 {
   "registry-mirrors": [
-    "https://docker.arvancloud.ir",
-    "https://mirror.gcr.io"
+    "https://docker.ir",
+    "https://huecker.io"  
   ]
 }
 ```
