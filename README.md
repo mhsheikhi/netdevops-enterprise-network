@@ -346,7 +346,7 @@ It configures SNMP uniformly across all devices via Ansible, so that the moment 
 ### Step 1 — Clone the Repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/netdevops-enterprise-network.git
+git clone https://github.com/mhsheikhi/netdevops-enterprise-network.git
 cd netdevops-enterprise-network
 ```
 
@@ -471,7 +471,7 @@ If you reference this work in your research, please cite:
   type     = {Bachelor's Thesis},
   year     = {2026},
   advisor  = {Dr. Parham Arjmand},
-  url      = {https://github.com/YOUR_USERNAME/netdevops-enterprise-network}
+  url      = {https://github.com/mhsheikhi/netdevops-enterprise-network}
 }
 ```
 
