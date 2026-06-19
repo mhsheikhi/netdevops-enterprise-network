@@ -1,0 +1,22 @@
+---
+- name: Phase 3 - Step 1 Enable SNMP on Devices
+  hosts: network_devices
+  gather_facts: false
+
+  vars:
+    snmp_pass: "public"
+    # WARNING: This value is for lab/demo purposes only.
+    # In production, use Ansible Vault to encrypt sensitive credentials.
+    # Reference: https://docs.ansible.com/ansible/latest/vault_guide/index.html
+    zabbixServer_ip: "192.168.10.20"
+
+  tasks:
+    - name: Configure SNMP Server
+      ios_config:
+        lines:
+          - snmp-server community {{ snmp_pass }} RO
+          - snmp-server host {{ zabbixServer_ip }} version 2c {{ snmp_pass }}
+
+    - name: Save Config
+      ios_config:
+        save_when: modified
