@@ -1,0 +1,31 @@
+---
+- name: Scenario 2 - Apply Standard Configuration
+  hosts: network_devices
+  gather_facts: false
+
+  tasks:
+    - name: Set login Warning Banner
+      ios_banner:
+        banner: motd
+        text: |
+          #################################################
+          #         WARNING: AUTHORIZED ACCESS ONLY       #
+          #   All activity on this device is monitored.   #
+          #       Disconnect IMMEDIATELY if unsure!       #
+          #################################################
+        state: present
+
+    - name: Encrypt Clear-text Passwords
+      ios_config:
+        lines:
+          - service password-encryption
+
+    - name: Configure DNS Server
+      ios_config:
+        lines:
+          - ip name-server 192.168.10.10
+          - ip domain-lookup
+
+    - name: Save Configuration to NVRAM
+      ios_config:
+        save_when: modified
