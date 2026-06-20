@@ -1,0 +1,6 @@
+{
+  "registry-mirrors": [
+    "https://registery.docker.ir",
+    "https://docker.arvancloud.ir"
+  ]
+}
