@@ -51,6 +51,7 @@ B.Sc. Thesis · Computer Engineering · Academic Year 2025–2026
 
 - [Overview](#-overview)
 - [Network Architecture](#-network-architecture)
+- ![Network Topology](screenshots/topology.jpg)
 - [Three-Phase NetDevOps Pipeline](#-three-phase-netdevops-pipeline)
 - [Technology Stack](#-technology-stack)
 - [Repository Structure](#-repository-structure)
