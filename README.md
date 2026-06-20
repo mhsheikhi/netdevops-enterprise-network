@@ -489,7 +489,7 @@ If you reference this work in your research, please cite:
 ![Network Map](screenshots/zabbix_network_map.png)
 
 ### Configured Triggers
-![Triggers](screenshots/zabbix_triggers.png)
+![Triggers](screenshots/zabbix_triggers.jpg)
 
 ### Ansible — Play Recap
 ![Ansible](screenshots/ansible_playrecap.jpg)
