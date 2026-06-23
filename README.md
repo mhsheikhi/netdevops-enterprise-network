@@ -16,7 +16,7 @@
 <br>
 
 [![Ansible](https://img.shields.io/badge/Ansible-2.15+-EE0000?style=for-the-badge&logo=ansible&logoColor=white)](https://www.ansible.com/)
-[![Zabbix](https://img.shields.io/badge/Zabbix-6.0_LTS-CC0000?style=for-the-badge&logo=zabbix&logoColor=white)](https://www.zabbix.com/)
+[![Zabbix](https://img.shields.io/badge/Zabbix-6.4-CC0000?style=for-the-badge&logo=zabbix&logoColor=white)](https://www.zabbix.com/)
 [![Docker](https://img.shields.io/badge/Docker-24.x-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
 [![Cisco IOS](https://img.shields.io/badge/Cisco_IOL-15.x-1BA0D7?style=for-the-badge&logo=cisco&logoColor=white)](https://www.cisco.com/)
 [![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
@@ -75,7 +75,7 @@ The work spans three tightly integrated phases:
 |:-----:|-------|:------------:|-------------|
 | **I** | Hierarchical Network Design & Deployment | GNS3 + Cisco IOL | Stable 3-layer topology with full VLAN segmentation and inter-VLAN routing |
 | **II** | Configuration Automation | Ansible | Five idempotent playbooks covering backup, standardization, VLANs, security hardening, and SNMP preparation |
-| **III** | Centralized Monitoring & Observability | Zabbix 6 + Docker | Containerized monitoring stack with proactive alerting, LLD, network maps, and escalation paths |
+| **III** | Centralized Monitoring & Observability | Zabbix 6.4 + Docker | Containerized monitoring stack with proactive alerting, LLD, live network maps, and 6-tier severity classification |
 
 ---
 
@@ -89,8 +89,8 @@ The work spans three tightly integrated phases:
                          ┌───────────▼──────────────┐
                          │         R1 (Router)       │
                          │     Edge / NAT / PAT      │
-                         │   fa0/0: 192.168.33.x/24  │
-                         │   eth1/0: 192.168.10.254   │
+                         │   Gi0/0: 192.168.33.x     │
+                         │   Gi0/1: 192.168.10.254   │
                          └───────────┬──────────────┘
                                      │  Layer 3 Routed Link
                          ┌───────────▼──────────────┐
@@ -106,39 +106,43 @@ The work spans three tightly integrated phases:
                                   │         │
                    Trunk (802.1Q) │         │ Trunk (802.1Q)
                  ┌────────────────▼──┐  ┌───▼──────────────────┐
-                 │      swEdu        │  │       swTech         │
-                 │   Access Switch   │  │    Access Switch     │
-                 │   VLAN 40 + Mgmt  │  │    VLAN 50 + Mgmt    │
-                 └────────┬──────────┘  └──────────┬───────────┘
+                 │      swEdu        │  │       swTech          │
+                 │   Access Switch   │  │    Access Switch      │
+                 │   VLAN 40 + Mgmt  │  │    VLAN 50 + Mgmt     │
+                 └────────┬──────────┘  └──────────┬────────────┘
                           │                         │
-              ┌───────────▼───────┐      ┌───────────▼──────────┐
-              │  Education PCs    │      │   Technology PCs     │
+              ┌───────────▼──────┐      ┌───────────▼──────────┐
+              │  Education PCs    │      │   Technology PCs      │
               │  192.168.40.0/24  │      │   192.168.50.0/24    │
               │  DHCP via Win2022 │      │   DHCP via Win2022   │
               └───────────────────┘      └──────────────────────┘
 
-  ╔══════════════════════ VLAN 10 — Management Backbone ══════════════════════╗
-  ║                                                                           ║
-  ║  ┌──────────────────────────┐            ┌────────────────────────┐       ║
-  ║  │    Ubuntu 20.04 LTS      │            │   Windows Server 2022  │       ║
-  ║  │    192.168.10.20         │            │    192.168.10.10       │       ║
-  ║  │  ┌────────────────────┐  │            │  ┌─────────────────┐   │       ║
-  ║  │  │ Ansible 2.15+      │  │            │  │   DHCP Server   │   │       ║
-  ║  │  │ Control Node       │  │            │  │   DNS Server    │   │       ║
-  ║  │  ├────────────────────┤  │            │  └─────────────────┘   │       ║
-  ║  │  │ Docker 24.x        │  │            └────────────────────────┘       ║
-  ║  │  │ ┌────────────────┐ │  │                                             ║
-  ║  │  │ │  Zabbix 6      │ │  │                                             ║
-  ║  │  │ │  PostgresSQL 8 │ │  │                                             ║
-  ║  │  │ │  Nginx         │ │  │◄── SNMP polls all devices via VLAN 10       ║
-  ║  │  │ └────────────────┘ │  │                                             ║
-  ║  │  └────────────────────┘  │                                             ║
-  ║  └──────────────────────────┘                                             ║
-  ╚═══════════════════════════════════════════════════════════════════════════╝
+  ╔══════════════════════ VLAN 10 — Management Backbone ═════════════════════╗
+  ║                                                                          ║
+  ║  ┌─────────────────────┐            ┌───────────────────────┐            ║
+  ║  │   Ubuntu 20.04 LTS  │            │   Windows Server 2022 │            ║
+  ║  │   192.168.10.20     │            │    192.168.10.10      │            ║
+  ║  │  ┌───────────────┐  │            │  ┌─────────────────┐  │            ║
+  ║  │  │ Ansible 2.15+ │  │            │  │   DHCP Server   │  │            ║
+  ║  │  │ Control Node  │  │            │  │   DNS Server    │  │            ║
+  ║  │  ├───────────────┤  │            │  └─────────────────┘  │            ║
+  ║  │  │ Docker 24.x   │  │            └───────────────────────┘            ║
+  ║  │  │ ┌───────────┐ │  │                                                 ║
+  ║  │  │ │  Zabbix 6 │ │  │                                                 ║
+  ║  │  │ │ PostgreSQL│ │  │                                                 ║
+  ║  │  │ │  Nginx    │ │  │◄── SNMP polls all devices via VLAN 10           ║
+  ║  │  │ └───────────┘ │  │                                                 ║
+  ║  │  └───────────────┘  │                                                 ║
+  ║  └─────────────────────┘                                                 ║
+  ╚══════════════════════════════════════════════════════════════════════════╝
 ```
 
 ---
+
 ![Network Topology](screenshots/topology.jpg)
+
+---
+
 ## 🔄 Three-Phase NetDevOps Pipeline
 
 ```mermaid
@@ -162,11 +166,11 @@ flowchart TD
 
     subgraph PH3["📡  PHASE III — Observability"]
         direction LR
-        C0[Zabbix 6\nDocker Stack] --> C1[SNMP\nPolling]
+        C0[Zabbix 6.4\nDocker Stack] --> C1[SNMP\nPolling]
         C1 --> C2[LLD Auto\nDiscovery]
         C2 --> C3[Trigger +\nHysteresis]
-        C3 --> C4[Escalation\nSelf-Healing]
-        C4 --> C5[Network Map\nLive Dashboard]
+        C3 --> C4[Dashboard\nColor-Coded Alerts]
+        C4 --> C5[Network Map\nLive Bandwidth]
     end
 
     PH1 -->|"Stable\nTopology"| PH2
@@ -187,14 +191,13 @@ flowchart TD
 | **Network OS** | Cisco IOL (IOS-on-Linux) | 15.x | L2/L3 switches + edge router |
 | **Automation** | Ansible | 2.15+ | Agentless configuration management |
 | **SSH Transport** | `network_cli` connection plugin | — | Persistent SSH sessions to Cisco IOS |
-| **Monitoring** | Zabbix Server | 6.0 LTS | SNMP polling, triggers, alerting |
-| **Database** | MySQL | 8.0 | Zabbix history & trends backend |
+| **Monitoring** | Zabbix Server | 6.4 | SNMP polling, triggers, alerting |
+| **Database** | PostgreSQL | 13 | Zabbix history & trends backend |
 | **Web UI** | Nginx + PHP | — | Zabbix frontend |
 | **Containers** | Docker + Compose | 24.x | Full Zabbix stack deployment |
 | **Control Node OS** | Ubuntu Server | 20.04 LTS | Ansible + Docker host |
 | **Services OS** | Windows Server | 2022 | DHCP, DNS |
-| **Monitoring Protocol** | SNMPv2c + ACL | — | Telemetry with source-IP restriction |
-| **CI/CD** | GitLab CI | — | Syntax check → Dry-run → Deploy |
+| **Monitoring Protocol** | SNMPv2c | — | Telemetry transport layer |
 | **Version Control** | Git | — | Infrastructure-as-Code backbone |
 
 ---
@@ -214,17 +217,25 @@ netdevops-enterprise-network/
 │       ├── 2_standardize.yml              ← MOTD, password encryption, DNS
 │       ├── 3_vlan.yml                     ← Data-driven VLAN provisioning (VTP transparent)
 │       ├── 4_security.yml                 ← CIS-aligned hardening (SSH, VTY, CDP, HTTP)
-│       └── 5_monitoring_prep.yml          ← SNMP community + ACL for Zabbix
+│       └── 5_monitoring_prep.yml          ← SNMP community for Zabbix integration
 │
 ├── 📂  monitoring/
-│   ├── docker-compose.yml                 ← Full Zabbix 6 stack (server + web + MySQL)
+│   ├── docker-compose.yml                 ← Full Zabbix 6.4 stack (server + web + PostgreSQL)
 │   └── daemon.json                        ← Docker registry mirror config (sanctions workaround)
 │
 ├── 📂  ci/
-│   └── gitlab-ci.yml                      ← 3-stage pipeline: validate → dry-run → deploy
+│   └── gitlab-ci.yml                      ← Reference CI/CD design: validate → dry-run → deploy
 │
-└── 📂  docs/
-    └── thesis.docx                        ← Full academic thesis document
+├── 📂  docs/
+│   ├── thesis.docx                        ← Full academic thesis document
+│   └── ip-addressing.md                   ← IP plan, VLAN table, and device roles
+│
+└── 📂  screenshots/
+    ├── topology.jpg                        ← GNS3 network topology
+    ├── zabbix_dashboard.png                ← Live monitoring dashboard
+    ├── zabbix_network_map.png              ← Interactive network map with live bandwidth
+    ├── zabbix_triggers.jpg                 ← Configured trigger list
+    └── ansible_playrecap.jpg              ← Ansible execution output
 ```
 
 ---
@@ -240,7 +251,7 @@ The full pipeline can be re-run safely at any time — no side effects, no surpr
 <summary><b>Scenario 1 — Dynamic Timestamped Backup</b></summary>
 
 ```yaml
-# Creates a folder per timestamp, saves each device's running config locally
+# Creates a timestamped folder, saves each device's running-config locally
 - name: Get Date
   command: date +%Y-%m-%d_%H:%M
   register: date_var
@@ -258,7 +269,7 @@ The full pipeline can be re-run safely at any time — no side effects, no surpr
 <summary><b>Scenario 3 — Data-Driven VLAN Provisioning</b></summary>
 
 ```yaml
-# To add/remove a VLAN: edit the vars block only — zero logic change
+# To add or remove a VLAN: edit only the vars block — zero logic change needed
 vars:
   my_vlans:
     - { id: 10, name: mgmt  }
@@ -276,13 +287,13 @@ tasks:
 </details>
 
 <details>
-<summary><b>Idempotency Guard — Only Save When Something Changed</b></summary>
+<summary><b>Idempotency Guard — Only Write to NVRAM When Something Changed</b></summary>
 
 ```yaml
-# Protects NVRAM from unnecessary write cycles
+# Skips the NVRAM write entirely if this run made no changes
 - name: Save Config
   ios_config:
-    save_when: modified   # NVRAM write is skipped if this run changed nothing
+    save_when: modified
 ```
 </details>
 
@@ -293,55 +304,61 @@ tasks:
 One command boots the entire monitoring platform:
 
 ```bash
+cd monitoring/
 docker compose up -d
 ```
 
-Three containers, one network, zero dependency conflicts:
+Three containers, one bridge network, zero dependency conflicts:
 
 ```
-zabbix-mysql-server   ←→   zabbix-server   ←→   zabbix-web-nginx
-    MySQL 8.0              Zabbix 6.0 LTS        Nginx + PHP frontend
-  (persistent vol)        (port 10051)             (port 8080)
+postgres-server   ←→   zabbix-server   ←→   zabbix-web
+ PostgreSQL 13       Zabbix 6.4 LTS        Nginx + PHP
+(persistent vol)     (port 10051)           (port 8080)
 ```
 
-**Monitoring capabilities active out of the box:**
+**Monitoring capabilities deployed in this project:**
 
 | Capability | Details |
-|-----------|---------|
-| 🟢 SNMP Polling | All Cisco devices via built-in `Cisco IOS by SNMP` template |
-| 🔍 Low-Level Discovery | Auto-detects new switch interfaces — zero manual host config |
-| 🔔 Trigger + Hysteresis | Separate ON/OFF thresholds eliminate alert flapping |
-| 🚨 6-Tier Severity | Information → Warning → Average → High → Critical → Disaster |
-| 🔁 Escalation + Self-Healing | Level 1 → Level 2 → Automated Ansible hook |
-| 🗺️ Live Network Map | Real-time bandwidth macros displayed on each link |
-| 📈 History vs Trends | 7–30 day raw history · 1 year aggregated trends |
-| 🔒 Source-Restricted SNMP | ACL limits responses to Zabbix IP only |
+|-----------|---------| 
+| 🟢 SNMP Polling | All 4 Cisco devices via `Cisco IOS by SNMP` template |
+| 🔍 Low-Level Discovery (LLD) | Auto-detects switch interfaces — no manual item creation |
+| 🔔 Trigger + Hysteresis | Separate ON/OFF thresholds — eliminates alert flapping |
+| 🚨 6-Tier Severity | Not Classified → Information → Warning → Average → High → Disaster |
+| 🗺️ Live Network Map | Interactive topology with real-time bandwidth via expression macros |
+| 📈 History & Trends | 90-day raw history · 365-day aggregated trends |
+| 🖥️ Dashboard Alerting | Color-coded event display on centralized Zabbix dashboard |
 
 ---
 
 ### 🔗 Ansible → Zabbix Integration Bridge
 
 Playbook 5 (`5_monitoring_prep.yml`) is the architectural glue between Phase II and Phase III.
-It configures SNMP uniformly across all devices via Ansible, so that the moment Zabbix comes online, polling works immediately — **zero manual switch configuration**.
+It configures SNMP uniformly across all devices so that the moment Zabbix starts, polling works immediately — **zero manual switch configuration**.
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│   Phase II ends with 5_monitoring_prep.yml                   │
-│                                                             │
-│   Ansible ──► All switches: SNMP community + ACL applied   │
-│                                                             │
-│   Phase III begins:                                         │
-│                                                             │
-│   docker compose up -d ──► Zabbix boots ──► Starts polling │
-│                                             immediately ✅  │
-└─────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────┐
+│   Phase II ends with 5_monitoring_prep.yml               │
+│                                                          │
+│   Ansible ──► All switches: SNMP community configured   │
+│                                                          │
+│   Phase III begins:                                      │
+│                                                          │
+│   docker compose up -d ──► Zabbix starts polling ✅     │
+└──────────────────────────────────────────────────────────┘
 ```
 
 ---
 
 ## 🚀 Quick Start
 
-> **Prerequisites:** GNS3 ≥ 2.x with Cisco IOL images · Ubuntu 20.04 LTS VM · Docker 24.x · Python 3.10+
+> ⚠️ **Important:** This project runs on **Cisco IOL images**, which are Cisco-proprietary and not included in this repository. You need a valid GNS3 setup with IOL images to reproduce the network environment. The Ansible and Docker components are fully open-source and portable.
+
+### Prerequisites
+
+- GNS3 ≥ 2.x with Cisco IOL L2 and L3 images
+- Ubuntu Server 20.04 LTS VM connected to the GNS3 topology
+- Docker 24.x + Docker Compose installed on the Ubuntu VM
+- Python 3.10+ and pip
 
 ### Step 1 — Clone the Repository
 
@@ -350,7 +367,7 @@ git clone https://github.com/mhsheikhi/netdevops-enterprise-network.git
 cd netdevops-enterprise-network
 ```
 
-### Step 2 — Install Ansible
+### Step 2 — Install Ansible and Dependencies
 
 ```bash
 sudo apt update && sudo apt install -y ansible python3-pip
@@ -359,17 +376,17 @@ pip3 install paramiko netmiko --break-system-packages
 
 ### Step 3 — Configure Your Inventory
 
-Edit `ansible/inventory.ini` and replace the IP addresses with your GNS3 device IPs.
-Use Ansible Vault for credentials in any non-lab environment:
+Edit `ansible/inventory.ini` and set the correct IP addresses for your GNS3 devices.
+
+> **Security note:** Credentials are stored in plaintext for lab purposes only. For production, use Ansible Vault:
+> ```bash
+> ansible-vault encrypt_string 'your_password' --name 'ansible_password'
+> ```
+
+### Step 4 — Verify Device Connectivity
 
 ```bash
-ansible-vault encrypt_string 'your_password' --name 'ansible_password'
-```
-
-### Step 4 — Verify Connectivity
-
-```bash
-ansible -i ansible/inventory.ini network_devices -m ping
+ansible -i ansible/inventory.ini network_devices -m ios_command -a "commands='show version'"
 ```
 
 ### Step 5 — Run the Full Automation Pipeline
@@ -382,37 +399,39 @@ ansible-playbook -i ansible/inventory.ini ansible/playbooks/4_security.yml
 ansible-playbook -i ansible/inventory.ini ansible/playbooks/5_monitoring_prep.yml
 ```
 
-### Step 6 — Deploy the Monitoring Stack
+### Step 6 — Deploy the Zabbix Monitoring Stack
 
 ```bash
-# (Optional) Configure domestic registry mirrors if needed:
+# If Docker Hub is blocked (Iranian IPs): apply domestic mirror config first
 sudo cp monitoring/daemon.json /etc/docker/daemon.json
 sudo systemctl restart docker
 
-# Start Zabbix:
+# Deploy the full Zabbix stack
 cd monitoring/
 docker compose up -d
 
-# Access the Zabbix web UI:
+# Zabbix web UI
 # URL:      http://192.168.10.20:8080
 # Username: Admin
 # Password: zabbix
 ```
 
+After login: navigate to **Monitoring → Hosts**, attach the `Cisco IOS by SNMP` template to each device, and polling begins immediately.
+
 ---
 
 ## 📊 Results & KPIs
 
-| Metric | Traditional CLI Approach | This NetDevOps Pipeline | Change |
-|--------|:------------------------:|:-----------------------:|:------:|
-| Config deployment time | Minutes (sequential, per-device) | Seconds (parallel, all devices) | ↓ ~90% |
-| Configuration drift | Undetected until failure | Eliminated by idempotent enforcement | ↓ ~100% |
-| Mean Time to Detect (MTTD) | Hours (reactive — user reports) | Seconds (proactive Zabbix trigger) | ↓ critical |
-| Human error surface | Every CLI session | Eliminated — code is the only interface | Near zero |
-| Monitoring license cost | High (SolarWinds / PRTG / etc.) | **Zero** (fully open-source) | ↓ 100% |
-| Stack re-deployment time | Days (manual reinstall) | `docker compose up -d` → seconds | ↓ ~99% |
-| Audit trail | None | Full Git history of every change | ✅ |
-| Rollback capability | Manual CLI reversal | `git revert` + re-run playbook | ✅ |
+| Metric | Traditional CLI | This NetDevOps Pipeline | Impact |
+|--------|:---------------:|:-----------------------:|--------|
+| Config deployment | Minutes, per-device, sequential | Seconds, all devices, parallel | ~90% faster |
+| Configuration drift | Undetected until failure | Eliminated for all Ansible-managed parameters | Near zero |
+| Mean Time to Detect (MTTD) | Hours (reactive, user report) | Seconds (proactive Zabbix trigger) | Critical improvement |
+| Human error exposure | Every manual CLI session | Removed from the loop entirely | Structural reduction |
+| Monitoring license cost | High (SolarWinds / PRTG) | **Zero** (fully open-source) | 100% savings |
+| Stack re-deployment | Days (manual reinstall) | `docker compose up -d` | Seconds |
+| Audit trail | None | Full Git history | ✅ |
+| Rollback | Manual CLI commands | `git revert` + re-run playbook | ✅ |
 
 ---
 
@@ -420,60 +439,43 @@ docker compose up -d
 
 ### 1 — Sanctions-Resilient Container Deployment
 
-Docker Hub is unreachable from Iranian IP ranges at the network layer (HTTP 403 / TLS timeout).
-This project documents a reproducible solution: re-engineering the Docker daemon to route all image pulls through domestic Iranian mirrors.
+Docker Hub is blocked at the network layer for Iranian IP ranges (HTTP 403 / TLS handshake timeout). This project implements a reproducible workaround: re-routing all container image pulls through domestic Iranian registry mirrors by configuring `/etc/docker/daemon.json`:
 
 ```json
-// /etc/docker/daemon.json
 {
   "registry-mirrors": [
-    "https://docker.ir",
-    "https://huecker.io"  
+    "https://registry.docker.ir",
+    "https://docker.arvancloud.ir"
   ]
 }
 ```
 
-All Zabbix images (server, web, MySQL) pulled successfully at full line speed.
-**This is a documented, reproducible model for containerized deployment under international infrastructure restrictions.**
+All Zabbix images downloaded at full line speed. **A documented, reproducible model for deploying containerized infrastructure under international sanctions.**
 
 ---
 
-### 2 — NetDevOps on Vendor Hardware (No SDN Required)
+### 2 — NetDevOps on Vendor Hardware — No SDN Required
 
-The full DevOps lifecycle — Infrastructure as Code, version control, idempotency, CI/CD pipelines, and continuous observability — is demonstrated here on **traditional Cisco IOS-based hardware**, not cloud-native or SDN environments. No proprietary controller. No NMS license. No vendor lock-in.
+The complete DevOps lifecycle — IaC, version control, idempotency, and continuous observability — is demonstrated here on **traditional Cisco IOS-based switching hardware**, not cloud-native or SDN environments. No proprietary controller. No NMS license. No vendor lock-in.
 
 ---
 
 ### 3 — Automation-First Monitoring Bootstrap
 
-Playbook 5 acts as the bridge between the automation and monitoring phases.
-By the time Zabbix starts, SNMP is already uniformly configured on every device — a direct result of the automation phase. The monitoring system can begin polling immediately with no manual intervention on any switch.
+Playbook 5 pre-configures SNMP on every device before Zabbix even starts. The result: zero manual switch interaction after `docker compose up -d`. The monitoring system comes online with full visibility already in place.
 
 ---
 
-### 4 — Self-Healing Architecture Foundation
+### 4 — Live Network Map with Expression Macros
 
-The Zabbix escalation path (Level 1 NOC → Level 2 Engineer → Remote Command hook) provides the scaffolding for a fully self-healing network. The `remote command` feature can invoke Ansible playbooks directly, enabling automated remediation before a human technician is ever involved.
+Zabbix 6.x expression macros were configured on network map links to display real-time bandwidth. For example, the link label on swEdu was set to:
 
----
-
-## 📚 Academic Citation
-
-If you reference this work in your research, please cite:
-
-```bibtex
-@thesis{sheykhi2026netdevops,
-  author   = {MohammadHossein Sheykhi},
-  title    = {A Unified Approach to Network Design, Purpose-Driven Automation
-              with Ansible, and Monitoring Implementation with Zabbix in a
-              Small Enterprise Environment},
-  school   = {[SalmanFarsi University of Kazerun]},
-  type     = {Bachelor's Thesis},
-  year     = {2026},
-  advisor  = {Dr. Parham Arjmand},
-  url      = {https://github.com/mhsheikhi/netdevops-enterprise-network}
-}
 ```
+In:  {?last(/swEdu/net.if.in[ifHCInOctets.1])}
+Out: {?last(/swEdu/net.if.out[ifHCOutOctets.1])}
+```
+
+This turns the static topology diagram into a live operational dashboard — traffic bottlenecks visible at a glance.
 
 ---
 
@@ -494,19 +496,37 @@ If you reference this work in your research, please cite:
 ### Ansible — Play Recap
 ![Ansible](screenshots/ansible_playrecap.jpg)
 
+---
+
+## 📚 Academic Citation
+
+```bibtex
+@thesis{sheikhi2026netdevops,
+  author   = {Mohammad Hossein Sheikhi},
+  title    = {A Unified Approach to Network Design, Purpose-Driven Automation
+              with Ansible, and Monitoring Implementation with Zabbix in a
+              Small Enterprise Environment},
+  school   = {Salman Farsi University of Kazerun},
+  type     = {Bachelor's Thesis},
+  year     = {2026},
+  advisor  = {Dr. Parham Arjmand},
+  url      = {https://github.com/mhsheikhi/netdevops-enterprise-network}
+}
+```
+
+---
+
 ## 👤 Author
 
 <div align="center">
 
 **Mohammad Hossein Sheikhi**
 
-B.Sc. Computer Engineering · Academic Year 2025–2026
-
-Supervisor: **Dr. Parham Arjmand**
+B.Sc. Computer Engineering · Salman Farsi University of Kazerun · 2025–2026
 
 <br>
 
-[![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/YOUR_USERNAME)
+[![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/mhsheikhi)
 
 </div>
 
@@ -514,9 +534,9 @@ Supervisor: **Dr. Parham Arjmand**
 
 <div align="center">
 
-*Built with open-source tools · No vendor lock-in · No licensing fees*
+*Built entirely on open-source tools · No vendor lock-in · No licensing fees*
 
-`Cisco IOS` · `Ansible` · `Zabbix` · `Docker` · `GNS3` · `Python` · `Ubuntu`
+`Cisco IOS` · `Ansible` · `Zabbix` · `Docker` · `PostgreSQL` · `GNS3` · `Python` · `Ubuntu`
 
 <br>
 
