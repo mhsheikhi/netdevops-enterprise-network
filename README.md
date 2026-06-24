@@ -21,7 +21,7 @@
 [![Cisco IOS](https://img.shields.io/badge/Cisco_IOL-15.x-1BA0D7?style=for-the-badge&logo=cisco&logoColor=white)](https://www.cisco.com/)
 [![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
 [![GNS3](https://img.shields.io/badge/GNS3-2.x-FF6D00?style=for-the-badge&logo=gnome&logoColor=white)](https://www.gns3.com/)
-[![Ubuntu](https://img.shields.io/badge/Ubuntu-20.04_LTS-E95420?style=for-the-badge&logo=ubuntu&logoColor=white)](https://ubuntu.com/)
+[![Ubuntu](https://img.shields.io/badge/Ubuntu-22.04_LTS-E95420?style=for-the-badge&logo=ubuntu&logoColor=white)](https://ubuntu.com/)
 [![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
 
 <br>
@@ -87,22 +87,22 @@ The work spans three tightly integrated phases:
                               └──────┬───────┘
                                      │  VMnet8 (NAT)
                          ┌───────────▼──────────────┐
-                         │         R1 (Router)       │
-                         │     Edge / NAT / PAT      │
-                         │   Gi0/0: 192.168.33.x     │
-                         │   Gi0/1: 192.168.10.254   │
+                         │         R1 (Router)      │
+                         │     Edge / NAT / PAT     │
+                         │   Gi0/0: 192.168.33.x    │
+                         │   Gi0/1: 192.168.10.254  │
                          └───────────┬──────────────┘
                                      │  Layer 3 Routed Link
-                         ┌───────────▼──────────────┐
-                         │    swDistribution          │
-                         │    Layer 3 Core Switch     │
+                         ┌───────────▼───────────────┐
+                         │    swDistribution         │
+                         │    Layer 3 Core Switch    │
                          │  ┌────────────────────┐   │
                          │  │  VLAN 10  SVI .1   │   │  ← Management
                          │  │  VLAN 40  SVI .1   │   │  ← Education
                          │  │  VLAN 50  SVI .1   │   │  ← Technology
                          │  │  VLAN 99  Native   │   │
                          │  └────────────────────┘   │
-                         └────────┬─────────┬─────────┘
+                         └────────┬─────────┬────────┘
                                   │         │
                    Trunk (802.1Q) │         │ Trunk (802.1Q)
                  ┌────────────────▼──┐  ┌───▼──────────────────┐
@@ -111,8 +111,8 @@ The work spans three tightly integrated phases:
                  │   VLAN 40 + Mgmt  │  │    VLAN 50 + Mgmt     │
                  └────────┬──────────┘  └──────────┬────────────┘
                           │                         │
-              ┌───────────▼──────┐      ┌───────────▼──────────┐
-              │  Education PCs    │      │   Technology PCs      │
+              ┌───────────▼───────┐      ┌───────────▼──────────┐
+              │  Education PCs    │      │   Technology PCs     │
               │  192.168.40.0/24  │      │   192.168.50.0/24    │
               │  DHCP via Win2022 │      │   DHCP via Win2022   │
               └───────────────────┘      └──────────────────────┘
@@ -120,7 +120,7 @@ The work spans three tightly integrated phases:
   ╔══════════════════════ VLAN 10 — Management Backbone ═════════════════════╗
   ║                                                                          ║
   ║  ┌─────────────────────┐            ┌───────────────────────┐            ║
-  ║  │   Ubuntu 20.04 LTS  │            │   Windows Server 2022 │            ║
+  ║  │   Ubuntu 22.04 LTS  │            │   Windows Server 2022 │            ║
   ║  │   192.168.10.20     │            │    192.168.10.10      │            ║
   ║  │  ┌───────────────┐  │            │  ┌─────────────────┐  │            ║
   ║  │  │ Ansible 2.15+ │  │            │  │   DHCP Server   │  │            ║
@@ -195,7 +195,7 @@ flowchart TD
 | **Database** | PostgreSQL | 13 | Zabbix history & trends backend |
 | **Web UI** | Nginx + PHP | — | Zabbix frontend |
 | **Containers** | Docker + Compose | 24.x | Full Zabbix stack deployment |
-| **Control Node OS** | Ubuntu Server | 20.04 LTS | Ansible + Docker host |
+| **Control Node OS** | Ubuntu Server | 22.04 LTS | Ansible + Docker host |
 | **Services OS** | Windows Server | 2022 | DHCP, DNS |
 | **Monitoring Protocol** | SNMPv2c | — | Telemetry transport layer |
 | **Version Control** | Git | — | Infrastructure-as-Code backbone |
@@ -339,7 +339,7 @@ It configures SNMP uniformly across all devices so that the moment Zabbix starts
 ┌──────────────────────────────────────────────────────────┐
 │   Phase II ends with 5_monitoring_prep.yml               │
 │                                                          │
-│   Ansible ──► All switches: SNMP community configured   │
+│   Ansible ──► All switches: SNMP community configured    │
 │                                                          │
 │   Phase III begins:                                      │
 │                                                          │
@@ -356,7 +356,7 @@ It configures SNMP uniformly across all devices so that the moment Zabbix starts
 ### Prerequisites
 
 - GNS3 ≥ 2.x with Cisco IOL L2 and L3 images
-- Ubuntu Server 20.04 LTS VM connected to the GNS3 topology
+- Ubuntu Server 22.04 LTS VM connected to the GNS3 topology
 - Docker 24.x + Docker Compose installed on the Ubuntu VM
 - Python 3.10+ and pip
 
