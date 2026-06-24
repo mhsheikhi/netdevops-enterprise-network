@@ -26,8 +26,8 @@
 
 <br>
 
-> **A Unified Approach to Network Design, Purpose-Driven Automation with Ansible,**
-> **and Monitoring Implementation with Zabbix in a Small Enterprise Environment**
+> **A Unified Approach to Network Design, Purpose-Driven Automation of Operational Scenarios with Ansible,**
+> **and Monitoring Implementation with Zabbix in a Small Organization**
 
 <br>
 
@@ -422,16 +422,16 @@ After login: navigate to **Monitoring → Hosts**, attach the `Cisco IOS by SNMP
 
 ## 📊 Results & KPIs
 
-| Metric | Traditional CLI | This NetDevOps Pipeline | Impact |
-|--------|:---------------:|:-----------------------:|--------|
-| Config deployment | Minutes, per-device, sequential | Seconds, all devices, parallel | ~90% faster |
-| Configuration drift | Undetected until failure | Eliminated for all Ansible-managed parameters | Near zero |
-| Mean Time to Detect (MTTD) | Hours (reactive, user report) | Seconds (proactive Zabbix trigger) | Critical improvement |
-| Human error exposure | Every manual CLI session | Removed from the loop entirely | Structural reduction |
-| Monitoring license cost | High (SolarWinds / PRTG) | **Zero** (fully open-source) | 100% savings |
-| Stack re-deployment | Days (manual reinstall) | `docker compose up -d` | Seconds |
+| Metric | Traditional CLI | This NetDevOps Pipeline | Change |
+|--------|:--------------:|:-----------------------:|:------:|
+| Config deployment time | Minutes, sequential | Seconds, parallel | ✅ |
+| Configuration drift | Undetected until failure | Eliminated for enforced parameters | ✅ |
+| MTTD | Hours (user reports) | Seconds (Zabbix trigger) | ✅ |
+| Human error surface | Every CLI session | Reduced to near zero | ✅ |
+| Monitoring license cost | High (SolarWinds/PRTG) | **Zero** (open-source) | ↓ 100% |
+| Stack re-deployment | Days (manual reinstall) | `docker compose up -d` | ✅ |
 | Audit trail | None | Full Git history | ✅ |
-| Rollback | Manual CLI commands | `git revert` + re-run playbook | ✅ |
+| Rollback capability | Manual CLI reversal | `git revert` + re-run | ✅ |
 
 ---
 
@@ -504,8 +504,8 @@ This turns the static topology diagram into a live operational dashboard — tra
 @thesis{sheikhi2026netdevops,
   author   = {Mohammad Hossein Sheikhi},
   title    = {A Unified Approach to Network Design, Purpose-Driven Automation
-              with Ansible, and Monitoring Implementation with Zabbix in a
-              Small Enterprise Environment},
+              of Operational Scenarios with Ansible, and Monitoring Implementation
+              with Zabbix in a Small Organization},
   school   = {Salman Farsi University of Kazerun},
   type     = {Bachelor's Thesis},
   year     = {2026},
