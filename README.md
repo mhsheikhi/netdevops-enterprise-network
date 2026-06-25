@@ -89,8 +89,8 @@ The work spans three tightly integrated phases:
                          ┌───────────▼──────────────┐
                          │         R1 (Router)      │
                          │     Edge / NAT / PAT     │
-                         │   Gi0/0: 192.168.33.x    │
-                         │   Gi0/1: 192.168.10.254  │
+                         │   Fa0/0: 192.168.33.x    │
+                         │   Eth1/0: 192.168.10.254 │
                          └───────────┬──────────────┘
                                      │  Layer 3 Routed Link
                          ┌───────────▼───────────────┐
