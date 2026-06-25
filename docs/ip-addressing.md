@@ -34,8 +34,8 @@
 
 | # | Device | Role | Interface | IP Address | Subnet Mask | VLAN | Notes |
 |---|--------|------|-----------|------------|-------------|------|-------|
-| 1 | **R1** | Edge Router / NAT | Gi0/0 | 192.168.33.x | /24 | — | DHCP from VMware NAT (VMnet8) |
-| 2 | **R1** | Edge Router / NAT | Gi0/1 | 192.168.10.254 | /24 | 10 | Default gateway for VLAN 10 |
+| 1 | **R1** | Edge Router / NAT | Fa0/0 | 192.168.33.x | /24 | — | DHCP from VMware NAT (VMnet8) |
+| 2 | **R1** | Edge Router / NAT | Eth1/0 | 192.168.10.254 | /24 | 10 | Default gateway for VLAN 10 |
 | 3 | **swDistribution** | L3 Core Switch | SVI VLAN 10 | 192.168.10.1 | /24 | 10 | Management network gateway |
 | 4 | **swDistribution** | L3 Core Switch | SVI VLAN 40 | 192.168.40.1 | /24 | 40 | Education network gateway |
 | 5 | **swDistribution** | L3 Core Switch | SVI VLAN 50 | 192.168.50.1 | /24 | 50 | Technology network gateway |
@@ -67,7 +67,7 @@
 
 | Link | From | To | Mode | Native VLAN | Allowed VLANs |
 |------|------|----|------|-------------|---------------|
-| Uplink | R1 Gi0/1 | swDistribution | Routed (L3) | — | — |
+| Uplink | R1 Eth1/0 | swDistribution | Routed (L3) | — | — |
 | Core–Edu | swDistribution | swEdu | Trunk (802.1Q) | 99 | 10, 40, 99 |
 | Core–Tech | swDistribution | swTech | Trunk (802.1Q) | 99 | 10, 50, 99 |
 
