@@ -31,12 +31,12 @@
 
 <br>
 
-**Mohammad Hossein Sheikhi**
+**Mohammad Hosein Sheikhi**
 B.Sc. Thesis · Computer Engineering · Academic Year 2025–2026
 
 <br>
 
-[📄 Read the Thesis](docs/thesis.docx) &nbsp;·&nbsp;
+[📄 Read the Thesis](docs/thesis.pdf) &nbsp;·&nbsp;
 [🔧 Ansible Playbooks](ansible/playbooks/) &nbsp;·&nbsp;
 [📊 Monitoring Stack](monitoring/) &nbsp;·&nbsp;
 [🚀 Quick Start](#-quick-start)
@@ -88,18 +88,18 @@ The work spans three tightly integrated phases:
                                      │  VMnet8 (NAT)
                          ┌───────────▼──────────────┐
                          │         R1 (Router)      │
-                         │     Edge / NAT / PAT     │
+                         │  Core Layer · NAT / PAT  │
                          │   Fa0/0: 192.168.33.x    │
                          │   Eth1/0: 192.168.10.254 │
                          └───────────┬──────────────┘
                                      │  Layer 3 Routed Link
                          ┌───────────▼───────────────┐
                          │    swDistribution         │
-                         │    Layer 3 Core Switch    │
+                         │   Distribution Layer (L3) │
                          │  ┌────────────────────┐   │
                          │  │  VLAN 10  SVI .1   │   │  ← Management
                          │  │  VLAN 40  SVI .1   │   │  ← Education
-                         │  │  VLAN 50  SVI .1   │   │  ← Technology
+                         │  │  VLAN 50  SVI .1   │   │  ← Technical
                          │  │  VLAN 99  Native   │   │
                          │  └────────────────────┘   │
                          └────────┬─────────┬────────┘
@@ -112,7 +112,7 @@ The work spans three tightly integrated phases:
                  └────────┬──────────┘  └──────────┬────────────┘
                           │                         │
               ┌───────────▼───────┐      ┌───────────▼──────────┐
-              │  Education PCs    │      │   Technology PCs     │
+              │  Education PCs    │      │   Technical PCs      │
               │  192.168.40.0/24  │      │   192.168.50.0/24    │
               │  DHCP via Win2022 │      │   DHCP via Win2022   │
               └───────────────────┘      └──────────────────────┘
@@ -160,7 +160,7 @@ flowchart TD
         B0[Ansible\nControl Node] --> B1[1 Backup\nTimestamped]
         B1 --> B2[2 Standardize\nBanner + Encrypt]
         B2 --> B3[3 VLANs\nData-Driven Loop]
-        B3 --> B4[4 Security\nCIS Hardening]
+        B3 --> B4[4 Security\nAttack-Surface Hardening]
         B4 --> B5[5 SNMP Prep\nZabbix Bridge]
     end
 
@@ -216,7 +216,7 @@ netdevops-enterprise-network/
 │       ├── 1_backup.yml                   ← Timestamped config backup to local disk
 │       ├── 2_standardize.yml              ← MOTD, password encryption, DNS
 │       ├── 3_vlan.yml                     ← Data-driven VLAN provisioning (VTP transparent)
-│       ├── 4_security.yml                 ← CIS-aligned hardening (SSH, VTY, CDP, HTTP)
+│       ├── 4_security.yml                 ← Attack-surface hardening (SSH, VTY, CDP, HTTP)
 │       └── 5_monitoring_prep.yml          ← SNMP community for Zabbix integration
 │
 ├── 📂  monitoring/
@@ -227,7 +227,7 @@ netdevops-enterprise-network/
 │   └── gitlab-ci.yml                      ← Reference CI/CD design: validate → dry-run → deploy
 │
 ├── 📂  docs/
-│   ├── thesis.docx                        ← Full academic thesis document
+│   ├── thesis.pdf                         ← Full academic thesis document
 │   └── ip-addressing.md                   ← IP plan, VLAN table, and device roles
 │
 └── 📂  screenshots/
@@ -371,7 +371,7 @@ cd netdevops-enterprise-network
 
 ```bash
 sudo apt update && sudo apt install -y ansible python3-pip
-pip3 install paramiko netmiko --break-system-packages
+pip3 install paramiko --break-system-packages
 ```
 
 ### Step 3 — Configure Your Inventory
@@ -502,7 +502,7 @@ This turns the static topology diagram into a live operational dashboard — tra
 
 ```bibtex
 @thesis{sheikhi2026netdevops,
-  author   = {Mohammad Hossein Sheikhi},
+  author   = {Sheikhi, Mohammad Hosein},
   title    = {A Unified Approach to Network Design, Purpose-Driven Automation
               of Operational Scenarios with Ansible, and Monitoring Implementation
               with Zabbix in a Small Organization},
@@ -520,7 +520,7 @@ This turns the static topology diagram into a live operational dashboard — tra
 
 <div align="center">
 
-**Mohammad Hossein Sheikhi**
+**Mohammad Hosein Sheikhi**
 
 B.Sc. Computer Engineering · Salman Farsi University of Kazerun · 2025–2026
 
