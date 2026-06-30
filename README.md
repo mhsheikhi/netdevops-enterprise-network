@@ -15,12 +15,12 @@
 
 <br>
 
-[![Ansible](https://img.shields.io/badge/Ansible-2.15+-EE0000?style=for-the-badge&logo=ansible&logoColor=white)](https://www.ansible.com/)
+[![Ansible](https://img.shields.io/badge/Ansible-2.17-EE0000?style=for-the-badge&logo=ansible&logoColor=white)](https://www.ansible.com/)
 [![Zabbix](https://img.shields.io/badge/Zabbix-6.4-CC0000?style=for-the-badge&logo=zabbix&logoColor=white)](https://www.zabbix.com/)
-[![Docker](https://img.shields.io/badge/Docker-24.x-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
-[![Cisco IOS](https://img.shields.io/badge/Cisco_IOL-15.x-1BA0D7?style=for-the-badge&logo=cisco&logoColor=white)](https://www.cisco.com/)
-[![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
-[![GNS3](https://img.shields.io/badge/GNS3-2.x-FF6D00?style=for-the-badge&logo=gnome&logoColor=white)](https://www.gns3.com/)
+[![Docker](https://img.shields.io/badge/Docker-29.2-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
+[![Cisco IOS](https://img.shields.io/badge/Cisco_IOL-15.4.1-1BA0D7?style=for-the-badge&logo=cisco&logoColor=white)](https://www.cisco.com/)
+[![Python](https://img.shields.io/badge/Python-3.10.4-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![GNS3](https://img.shields.io/badge/GNS3-2.2.54-FF6D00?style=for-the-badge&logo=gnome&logoColor=white)](https://www.gns3.com/)
 [![Ubuntu](https://img.shields.io/badge/Ubuntu-22.04_LTS-E95420?style=for-the-badge&logo=ubuntu&logoColor=white)](https://ubuntu.com/)
 [![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
 
