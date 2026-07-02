@@ -36,7 +36,7 @@ B.Sc. Thesis · Computer Engineering · Academic Year 2025–2026
 
 <br>
 
-[📄 Read the Thesis](docs/thesis.pdf) &nbsp;·&nbsp;
+[📄 Read the Thesis](docs/Thesis.pdf) &nbsp;·&nbsp;
 [🔧 Ansible Playbooks](ansible/playbooks/) &nbsp;·&nbsp;
 [📊 Monitoring Stack](monitoring/) &nbsp;·&nbsp;
 [🚀 Quick Start](#-quick-start)
@@ -227,7 +227,7 @@ netdevops-enterprise-network/
 │   └── gitlab-ci.yml                      ← Reference CI/CD design: validate → dry-run → deploy
 │
 ├── 📂  docs/
-│   ├── thesis.pdf                         ← Full academic thesis document
+│   ├── Thesis.pdf                         ← Full academic thesis document
 │   └── ip-addressing.md                   ← IP plan, VLAN table, and device roles
 │
 └── 📂  screenshots/
