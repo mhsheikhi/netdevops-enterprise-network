@@ -1,0 +1,10 @@
+---
+- name: Self-Healing - Restore Specific Interface
+  hosts: "{{ target_host }}"
+  gather_facts: false
+  tasks:
+    - name: Bring interface back up
+      cisco.ios.ios_config:
+        lines:
+          - no shutdown
+        parents: "interface {{ target_interface }}"
