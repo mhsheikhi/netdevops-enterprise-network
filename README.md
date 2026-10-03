@@ -55,6 +55,7 @@ B.Sc. Thesis · Computer Engineering · Academic Year 2025–2026
 - [Technology Stack](#-technology-stack)
 - [Repository Structure](#-repository-structure)
 - [Implementation Highlights](#-implementation-highlights)
+- [Reliability Automation](#-reliability-automation)
 - [Quick Start](#-quick-start)
 - [Results & KPIs](#-results--kpis)
 - [Key Innovations](#-key-innovations)
@@ -206,6 +207,7 @@ flowchart TD
 
 ```
 netdevops-enterprise-network/
+netdevops-enterprise-network/
 │
 ├── 📄  README.md                          ← You are here
 │
@@ -217,7 +219,10 @@ netdevops-enterprise-network/
 │       ├── 2_standardize.yml              ← MOTD, password encryption, DNS
 │       ├── 3_vlan.yml                     ← Data-driven VLAN provisioning (VTP transparent)
 │       ├── 4_security.yml                 ← Attack-surface hardening (SSH, VTY, CDP, HTTP)
-│       └── 5_monitoring_prep.yml          ← SNMP community for Zabbix integration
+│       ├── 5_monitoring_prep.yml          ← SNMP community for Zabbix integration
+│       └── heal_interface.yml             ← Self-healing: targeted `no shutdown` remediation
+│
+├── 📜  run_backup.sh                      ← Cron wrapper for automated nightly backup
 │
 ├── 📂  monitoring/
 │   ├── docker-compose.yml                 ← Full Zabbix 6.4 stack (server + web + PostgreSQL)
@@ -348,6 +353,58 @@ It configures SNMP uniformly across all devices so that the moment Zabbix starts
 ```
 
 ---
+## 🛡 Reliability Automation
+
+Beyond the three-phase pipeline covered in the thesis, the deployed network runs two closed-loop reliability mechanisms — each pairs a Zabbix check with a targeted Ansible remediation. Full implementation details and verification evidence: [`CHANGES.md`](CHANGES.md).
+
+### Self-Healing Interface Recovery
+
+Zabbix polls interface state via SNMP every 10 seconds. On failure, it automatically fires a targeted Ansible playbook that restores the interface — no manual intervention.
+
+<p align="center">
+  <img src="screenshots/self_healing_flow.png" alt="Self-Healing Flow" width="420">
+</p>
+
+**Design note:** the fault-injection target is `Fa0/0` (WAN-facing) — deliberately *not* `Eth1/0`, which carries the Ansible Controller's own management path to the router. Healing the link that the healing automation itself depends on would be a dead end.
+
+```yaml
+# heal_interface.yml — scoped to one parameterized action, nothing broader
+- name: Self-Healing - Restore Specific Interface
+  hosts: "{{ target_host }}"
+  gather_facts: false
+  tasks:
+    - name: Bring interface back up
+      cisco.ios.ios_config:
+        lines:
+          - no shutdown
+        parents: "interface {{ target_interface }}"
+```
+
+| Zabbix Object | Configuration |
+|---|---|
+| Item | `ifOperStatus.1` via SNMP, 10s interval |
+| Trigger | `last(/Router1/ifOperStatus.1)=2` · Severity: Disaster |
+| Action | Runs `heal_interface.yml` on the Ansible Controller host |
+
+### Verified Nightly Backups
+
+`1_backup.yml` is scheduled via `cron`, and a second, independent Zabbix check confirms a fresh backup actually landed on disk — so a silent failure doesn't go unnoticed.
+
+```
+cron (21:00 daily) ──► run_backup.sh ──► 1_backup.yml ──► playbooks/backups/<date>/
+                                                                  │
+                                                   Zabbix UserParameter polls age
+                                                   of the most recent backup folder
+                                                                  │
+                                                   Trigger fires if backup > 25h old
+```
+
+| Zabbix Object | Configuration |
+|---|---|
+| Item | `backup.age` (seconds since last backup folder) |
+| Trigger | `last(/Ubuntu-server/backup.age)>90000` · Severity: Warning |
+
+---
 
 ## 🚀 Quick Start
 
@@ -432,6 +489,8 @@ After login: navigate to **Monitoring → Hosts**, attach the `Cisco IOS by SNMP
 | Stack re-deployment | Days (manual reinstall) | `docker compose up -d` | ✅ |
 | Audit trail | None | Full Git history | ✅ |
 | Rollback capability | Manual CLI reversal | `git revert` + re-run | ✅ |
+| Interface fault remediation | Manual, ~45s (lab-measured) | Automatic, ~10s (lab-measured) | ↓ ~78% |
+| Backup integrity | Assumed (unverified) | Independently verified via Zabbix | ✅ |
 
 ---
 
