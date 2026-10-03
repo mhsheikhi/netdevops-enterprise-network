@@ -555,6 +555,11 @@ This turns the static topology diagram into a live operational dashboard — tra
 ### Ansible — Play Recap
 ![Ansible](screenshots/ansible_playrecap.jpg)
 
+### Self-Healing Automation Flow
+<p align="center">
+  <img src="screenshots/self_healing_flow.png" alt="Self-Healing Flow" width="420">
+</p>
+
 ---
 
 ## 📚 Academic Citation
